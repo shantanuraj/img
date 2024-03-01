@@ -21,8 +21,8 @@ You can execute the built executable by invoking it directly
 zig-out/bin/img
 ```
 
-You can also run the program using `zig run`
+You can also run the program using `zig build run`
 
 ```sh
-zig run src/main.zig
+zig build run
 ```

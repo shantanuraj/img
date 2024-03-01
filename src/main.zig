@@ -5,19 +5,18 @@ const c = @cImport({
 });
 
 pub fn main() !void {
-    // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
+    const allocator = std.heap.page_allocator;
+    const file_name = "fixtures/norway_hut.jpg";
 
-    // stdout is for the actual output of your application, for example if you
-    // are implementing gzip, then only the compressed bytes should be sent to
-    // stdout, not any debugging messages.
-    const stdout_file = std.io.getStdOut().writer();
-    var bw = std.io.bufferedWriter(stdout_file);
-    const stdout = bw.writer();
+    const file = try std.fs.cwd().openFile(file_name, .{});
+    defer file.close();
 
-    try stdout.print("Run `zig build test` to run the tests.\n", .{});
+    const file_size = try file.getEndPos();
 
-    try bw.flush(); // Don't forget to flush!
+    const file_contents = try file.readToEndAlloc(allocator, file_size);
+    defer allocator.free(file_contents);
+
+    std.debug.print("Bytes read: {}\n", .{file_contents.len});
 }
 
 test "simple test" {
