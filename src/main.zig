@@ -6,9 +6,13 @@ const c = @cImport({
 
 pub fn main() !void {
     const allocator = std.heap.page_allocator;
-    const file_name = "fixtures/norway_hut.jpg";
 
-    const file = try std.fs.cwd().openFile(file_name, .{});
+    const args = try std.process.argsAlloc(allocator);
+    defer allocator.free(args);
+
+    const file =
+        if (args.len > 1) try std.fs.openFileAbsolute(args[1], .{ .mode = .read_only })
+        else try std.fs.cwd().openFile("fixtures/norway_hut.jpg", .{});
     defer file.close();
 
     const file_size = try file.getEndPos();
