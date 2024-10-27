@@ -17,6 +17,21 @@ pub fn main() !void {
     defer allocator.free(file_contents);
 
     std.debug.print("Bytes read: {}\n", .{file_contents.len});
+
+    var width: c_int = 0;
+    var height: c_int = 0;
+    var channels: c_int = 0;
+
+    const file_size_c: c_int = @intCast(file_size);
+
+    const img = c.stbi_load_from_memory(file_contents.ptr, file_size_c, &width, &height, &channels, 0);
+    defer c.stbi_image_free(img);
+
+    if (img == null) {
+        return std.debug.print("Failed to load image\n", .{});
+    }
+
+    std.debug.print("Image dimensions: {}x{} (channels: {})\n", .{width, height, channels});
 }
 
 test "simple test" {
