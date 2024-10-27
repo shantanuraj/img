@@ -12,7 +12,7 @@ pub fn main() !void {
 
     const file =
         if (args.len > 1) try std.fs.openFileAbsolute(args[1], .{ .mode = .read_only })
-        else try std.fs.cwd().openFile("fixtures/norway_hut.jpg", .{});
+        else try std.fs.cwd().openFile("./src/fixtures/norway_hut.jpg", .{});
     defer file.close();
 
     const file_size = try file.getEndPos();
