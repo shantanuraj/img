@@ -1,5 +1,7 @@
 const std = @import("std");
 
+const CStbImgFlags = &[_][]const u8{"-g"};
+
 // Although this function looks imperative, note that its job is to
 // declaratively construct a build graph that will be executed by an external
 // runner.
@@ -21,6 +23,12 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .optimize = optimize,
     });
+
+    // Add libs to include path
+    exe.addIncludePath(b.path("lib"));
+
+    // Link against stb_image.c
+    exe.addCSourceFiles(.{.files = &[_][]const u8{"lib/stb_image.c"}, .flags = CStbImgFlags }); // -g adds debug info, makes it easier to debug
 
     // This declares intent for the executable to be installed into the
     // standard location when the user invokes the "install" step (the default
