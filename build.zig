@@ -24,6 +24,9 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
 
+    // Link libc
+    exe.linkLibC();
+
     // Add libs to include path
     exe.addIncludePath(b.path("lib"));
 
